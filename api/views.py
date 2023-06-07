@@ -9,8 +9,6 @@ from rest_framework import status
 class RegisterView(APIView):
     def post(self,request):
         reg_serializer = UserSerializer(data=request.data)
-        if reg_serializer.is_valid():
-            new_user = reg_serializer.save()
-            if new_user:
-                return Response(status=status.HTTP_201_CREATED)
-        return Response(reg_serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+        reg_serializer.is_valid(raise_exception=True)
+        reg_serializer.save()
+        return Response(reg_serializer.data)
