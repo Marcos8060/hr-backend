@@ -3,6 +3,9 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from .models import User
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your views here.
 
@@ -12,3 +15,26 @@ class RegisterView(APIView):
         reg_serializer.is_valid(raise_exception=True)
         reg_serializer.save()
         return Response(reg_serializer.data)
+
+
+class LoginView(APIView):
+    def post(self,request):
+        email = request.data['email']
+        password = request.data['password']
+
+        user = User.objects.filter(email=email).first()
+
+        if user is None:
+            raise AuthenticationFailed('User does not exist')
+        
+        if not user.check_password(password):
+            raise AuthenticationFailed('Incorrect password')
+        
+
+        # return refresh token and access token after user login
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            'refresh': str(refresh),
+            'access' : str(refresh.access_token)
+        })
