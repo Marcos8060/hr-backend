@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import UserSerializer
+from .serializers import UserSerializer,ProjectSerializer
 from rest_framework.response import Response
-from rest_framework import status
-from .models import User
+from rest_framework import generics
+from .models import User,Project
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -38,3 +38,8 @@ class LoginView(APIView):
             'refresh': str(refresh),
             'access' : str(refresh.access_token)
         })
+
+
+class ProjectView(generics.ListCreateAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer

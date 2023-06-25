@@ -13,3 +13,9 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+
+class Project(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    name=models.CharField(max_length=200)
+    date_created=models.DateTimeField(auto_now_add=True)
+
