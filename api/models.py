@@ -19,3 +19,9 @@ class Project(models.Model):
     name=models.CharField(max_length=200)
     date_created=models.DateTimeField(auto_now_add=True)
 
+
+class Todos(models.Model):
+    project=models.ForeignKey(Project,on_delete=models.CASCADE,default=1)
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    description = models.TextField()
+
