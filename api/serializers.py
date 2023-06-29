@@ -5,7 +5,7 @@ from .models import User,Project,Todos
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'password',]
+        fields = ['id', 'username', 'email', 'password',]
         # eliminate the password from being return upon user registration.
         extra_kwargs = {
             'password' : { 'write_only': True}
