@@ -2,19 +2,38 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from .serializers import UserSerializer,ProjectSerializer
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics,status
 from .models import User,Project
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your views here.
 
+
+
 class RegisterView(APIView):
-    def post(self,request):
+    def post(self, request):
         reg_serializer = UserSerializer(data=request.data)
-        reg_serializer.is_valid(raise_exception=True)
-        reg_serializer.save()
-        return Response(reg_serializer.data)
+        if reg_serializer.is_valid():
+            email = reg_serializer.validated_data.get('email')
+            if User.objects.filter(email=email).exists():
+               error_message = "Email already exists"
+               return Response(
+                 {"success": False, "message": error_message},
+                    status=status.HTTP_400_BAD_REQUEST
+                  )
+            else:
+                reg_serializer.save()
+                return Response(
+                    {"success": True, "message": "Registration successful"},
+                    status=status.HTTP_201_CREATED
+                )
+        else:
+            error_message = reg_serializer.errors.get('email', '')
+            return Response(
+                {"success": False, "message": error_message},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class LoginView(APIView):
