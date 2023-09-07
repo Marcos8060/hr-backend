@@ -1,15 +1,37 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from .serializers import UserSerializer,ProjectSerializer
 from rest_framework.response import Response
 from rest_framework import generics,status
 from .models import User,Project
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+
+
+# CUSTOMIZING TOKENS
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        token['email'] = user.email
+        # ...
+
+        return token
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
 
 # Create your views here.
-
-
 
 class RegisterView(APIView):
     def post(self, request):
@@ -36,12 +58,12 @@ class RegisterView(APIView):
             )
 
 
-class LoginView(APIView):
+class LoginView(MyTokenObtainPairView):
     def post(self,request):
-        email = request.data['email']
+        username = request.data['username']
         password = request.data['password']
 
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter(username=username).first()
 
         if user is None:
             raise AuthenticationFailed('User does not exist')
@@ -50,25 +72,16 @@ class LoginView(APIView):
             raise AuthenticationFailed('Incorrect password')
         
 
-        # return refresh token and access token after user login
-        refresh = RefreshToken.for_user(user)
-
-        return Response({
-            'refresh': str(refresh),
-            'access' : str(refresh.access_token)
-        })
-
 
 class ProjectView(generics.ListCreateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
+    
+
 
 
 class ProjectDetailsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
-
-class TodosView(generics.ListCreateAPIView):
-    queryset = Project.objects.all()
-    serializer_class = ProjectSerializer

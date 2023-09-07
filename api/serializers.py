@@ -1,11 +1,18 @@
 from rest_framework import serializers
-from .models import User,Project,Todos
+from .models import User,Project
+    
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = '__all__'
+
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password',]
+        fields = ['id', 'username', 'email']
         # eliminate the password from being return upon user registration.
         extra_kwargs = {
             'password' : { 'write_only': True}
@@ -20,17 +27,5 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
-    
-
-class ProjectSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        fields = '__all__'
-
-
-class TodoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Todos
-        fields = '__all__'
 
 

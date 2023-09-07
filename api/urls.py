@@ -1,10 +1,18 @@
 from django.urls import path
-from .views import RegisterView,LoginView,ProjectView,ProjectDetailsView
+from .views import *
+from rest_framework_simplejwt.views import TokenBlacklistView
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
 
 
 urlpatterns = [
-    path('register',RegisterView.as_view()),
-    path('login',LoginView.as_view()),
-    path('project',ProjectView.as_view()),
-    path('project/<int:pk>/',ProjectDetailsView.as_view()),
+    path('register', RegisterView.as_view()),
+    path('project', ProjectView.as_view()),
+    path('project/<int:pk>/', ProjectDetailsView.as_view()),
+
+
+     # TOKEN
+    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
