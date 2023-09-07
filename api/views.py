@@ -1,10 +1,12 @@
 from rest_framework.views import APIView
-from .serializers import UserSerializer,ProjectSerializer
+from .serializers import UserSerializer,ProjectSerializer,PermissionSerializer
 from rest_framework.response import Response
 from rest_framework import generics,status
-from .models import User,Project
+from .models import User,Project,Permission
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+
 
 
 # CUSTOMIZING TOKENS
@@ -72,6 +74,18 @@ class LoginView(MyTokenObtainPairView):
             raise AuthenticationFailed('Incorrect password')
         
 
+
+class PermissionsView(generics.ListAPIView):
+    serializer_class = PermissionSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs['userId']
+        user = get_object_or_404(User, id=user_id)
+        roles = user.roles.all()  # Get all roles associated with the user
+        permissions = Permission.objects.filter(role__in=roles)  # Filter permissions by roles
+        return permissions
+    
+    
 
 class ProjectView(generics.ListCreateAPIView):
     queryset = Project.objects.all()

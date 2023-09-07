@@ -1,10 +1,16 @@
 from rest_framework import serializers
-from .models import User,Project
+from .models import User,Project,Permission
     
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
+        fields = '__all__'
+
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
         fields = '__all__'
 
 

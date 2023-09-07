@@ -10,6 +10,7 @@ urlpatterns = [
     path('register', RegisterView.as_view()),
     path('project', ProjectView.as_view()),
     path('project/<int:pk>/', ProjectDetailsView.as_view()),
+    path('permissions/<int:userId>',PermissionsView.as_view()),
 
 
      # TOKEN
