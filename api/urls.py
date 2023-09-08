@@ -11,6 +11,7 @@ urlpatterns = [
     path('project', ProjectView.as_view()),
     path('project/<int:pk>/', ProjectDetailsView.as_view()),
     path('permissions/<int:userId>',PermissionsView.as_view()),
+    path('all-permissions',PermissionListView.as_view()),
 
 
      # TOKEN

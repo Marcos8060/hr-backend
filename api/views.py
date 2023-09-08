@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from .serializers import UserSerializer,ProjectSerializer,PermissionSerializer
+from .serializers import UserSerializer,ProjectSerializer,PermissionSerializer,AllPermissionsSerializer
 from rest_framework.response import Response
 from rest_framework import generics,status
 from .models import User,Project,Permission
@@ -84,6 +84,12 @@ class PermissionsView(generics.ListAPIView):
         roles = user.roles.all()  # Get all roles associated with the user
         permissions = Permission.objects.filter(role__in=roles)  # Filter permissions by roles
         return permissions
+    
+
+class PermissionListView(generics.ListAPIView):
+    queryset = Permission.objects.all()
+    serializer_class = AllPermissionsSerializer
+
     
     
 

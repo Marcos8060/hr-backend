@@ -17,7 +17,7 @@ class User(AbstractUser):
 
 class Permission(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    permission = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
