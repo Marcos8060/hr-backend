@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import User,Project,Permission
+from django.contrib.auth.password_validation import validate_password
+from .models import *
     
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -29,26 +30,36 @@ class AllPermissionsSerializer(serializers.ModelSerializer):
     
     def get_role_name(self, obj):
         return obj.role.name
+    
 
-
-
-class UserSerializer(serializers.ModelSerializer):
+class RoleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'username', 'email']
-        # eliminate the password from being return upon user registration.
-        extra_kwargs = {
-            'password' : { 'write_only': True}
-        }
+        model = Role
+        fields = '__all__'
 
 
-   # hash the user password in the database
+class RegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    role = serializers.CharField()  # Accept role as a string
+
+    class Meta:
+        model = Employee
+        fields = '__all__'
+
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        instance = self.Meta.model(**validated_data)
-        if password is not None:
-            instance.set_password(password)
-        instance.save()
-        return instance
+        # Extract and remove the 'role' string from the validated data
+        role_name = validated_data.pop('role')
+
+        # Find or create the corresponding Role object
+        role, _ = Role.objects.get_or_create(name=role_name)
+
+        # Assign the Role object back to the 'role' field
+        validated_data['role'] = role
+
+        password = validated_data.pop('password')
+        user = Employee.objects.create(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
 

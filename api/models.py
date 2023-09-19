@@ -1,5 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser,Permission
+from django.contrib.auth.models import Permission
+from django.contrib.auth.models import AbstractUser
+
 
 # Create your models here.
 class Role(models.Model):
@@ -10,9 +12,13 @@ class Role(models.Model):
         return self.name
     
 
-class User(AbstractUser):
-    name=models.CharField(max_length=200)
-    roles = models.ManyToManyField(Role, blank=True)
+class Employee(AbstractUser):
+    # Add any additional fields specific to employees
+    full_name=models.CharField(max_length=30)
+    email=models.EmailField()
+    occupation=models.CharField(max_length=200)
+    role=models.ForeignKey(Role,on_delete=models.CASCADE)
+    
     
 
 class Permission(models.Model):
