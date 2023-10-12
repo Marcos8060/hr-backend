@@ -13,6 +13,7 @@ urlpatterns = [
     path('project/<int:pk>/', ProjectDetailsView.as_view()),
     path('permissions/<int:userId>',PermissionsView.as_view()),
     path('all-permissions',PermissionListView.as_view()),
+    path('create-leave',LeaveDetailsView.as_view()),
 
 
      # TOKEN

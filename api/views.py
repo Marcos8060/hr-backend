@@ -12,8 +12,6 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
-
-
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -86,4 +84,9 @@ class ProjectView(generics.ListCreateAPIView):
 class ProjectDetailsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+
+class LeaveDetailsView(generics.ListCreateAPIView):
+    queryset = Leave.objects.all()
+    serializer_class = LeaveSerializer
 

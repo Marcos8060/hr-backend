@@ -22,8 +22,8 @@ class Employee(AbstractUser):
 
 class Leave(models.Model):
     leave_type=models.CharField(max_length=200)
-    date_from=models.DateTimeField(auto_now_add=True)
-    date_to=models.DateTimeField(auto_now_add=True)
+    date_from=models.DateTimeField(auto_now_add=False)
+    date_to=models.DateTimeField(auto_now_add=False)
     number_of_days=models.IntegerField()
     reason=models.CharField(max_length=400)
 
