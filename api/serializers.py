@@ -15,7 +15,7 @@ class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
         # fields = '__all__'
-        fields = ['id', 'permission','role_name']
+        fields = ['id', 'name','role_name']
 
     def get_role_name(self, obj):
         return obj.role.name
@@ -26,7 +26,7 @@ class AllPermissionsSerializer(serializers.ModelSerializer):
     role_name = serializers.SerializerMethodField()
     class Meta:
         model = Permission
-        fields = ['id', 'permission','role_name']
+        fields = ['id', 'name','role_name']
     
     def get_role_name(self, obj):
         return obj.role.name
@@ -63,3 +63,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
+
+class UsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = '__all__'

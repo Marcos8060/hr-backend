@@ -17,13 +17,23 @@ class Employee(AbstractUser):
     full_name=models.CharField(max_length=30)
     email=models.EmailField()
     occupation=models.CharField(max_length=200)
-    role=models.ForeignKey(Role,on_delete=models.CASCADE)
-    
-    
+    role=models.ForeignKey(Role,on_delete=models.CASCADE,null=True,blank=True)
+
+
+class Leave(models.Model):
+    leave_type=models.CharField(max_length=200)
+    date_from=models.DateTimeField(auto_now_add=True)
+    date_to=models.DateTimeField(auto_now_add=True)
+    number_of_days=models.IntegerField()
+    reason=models.CharField(max_length=400)
+
+    def __str__(self):
+      return self.leave_type
+
 
 class Permission(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    permission = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name

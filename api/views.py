@@ -50,24 +50,37 @@ class PermissionsView(generics.ListAPIView):
     def get_queryset(self):
         user_id = self.kwargs['userId']
         user = get_object_or_404(Employee, id=user_id)
-        roles = user.roles.all()  # Get all roles associated with the user
-        permissions = Permission.objects.filter(role__in=roles)  # Filter permissions by roles
-        return permissions
+        
+        # Check if the user has a role assigned
+        if user.role:
+            permissions = Permission.objects.filter(role=user.role)
+            return permissions
+        else:
+            # If the user does not have a role assigned, return an empty queryset
+            return Permission.objects.none()
+
     
 
 class PermissionListView(generics.ListAPIView):
     queryset = Permission.objects.all()
     serializer_class = AllPermissionsSerializer
 
-    
-    
+
+class RoleListView(generics.ListAPIView):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+
+
+class AllUsersView(generics.ListAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = UsersSerializer
+   
 
 class ProjectView(generics.ListCreateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated]
     
-
 
 
 class ProjectDetailsView(generics.RetrieveUpdateDestroyAPIView):
