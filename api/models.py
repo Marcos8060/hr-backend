@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 
 # Create your models here.
@@ -47,9 +48,14 @@ STATUS_CHOICES=(
 )
 
 class Project(models.Model):
-    name=models.CharField(max_length=200)
+    project_name=models.CharField(max_length=200)
     status=models.CharField(max_length=30,choices=STATUS_CHOICES,default='in progress')
-    date_created=models.DateTimeField(auto_now_add=True)
+    start_date=models.DateTimeField(auto_now_add=True)
+    end_date=models.DateTimeField(auto_now_add=True)
+    client_name=models.CharField(max_length=200)
+    project_leader=models.CharField(max_length=200)
+    priority=models.CharField(max_length=200)
+    description=models.TextField()
 
 
 class ApprovedProject(models.Model):
